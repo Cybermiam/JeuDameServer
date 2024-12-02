@@ -47,22 +47,7 @@ wsServer.on('request', function(request) {
             console.log(connectedUsernames);
             
             
-        } else if (message.type === 'ping') {
-            let userToPing;
-            connectedUsernames.forEach(user => {
-                if (user !== message.username) {
-                    userToPing = user;
-                }
-            });
-            message = { type: 'pong', username: userToPing };
-            connectedUsers.forEach(user => {
-                user.send(JSON.stringify(message));
-            });
-            console.log('Ping from client');
-        } 
-        
-        
-        else {
+        } else {
             connection.sendUTF('message recu mais type inconnu');
         }
 

@@ -88,7 +88,7 @@ wsServer.on('request', function(request) {
                 fileAttente[1].color = randomColor === 1 ? 'black' : 'white';
                 let message = { type: 'start' , joueur1: fileAttente[0].username, joueur2: fileAttente[1].username };
                 fileAttente.forEach(player => {
-                    player.send(JSON.stringify(message));
+                    player.connection.send(JSON.stringify(message));
                 });
                 partie = { joueur1: fileAttente[0], joueur2: fileAttente[1] };
                 partiesEnCours.push(partie);

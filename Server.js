@@ -9,6 +9,7 @@ const users = [
 ];
 
 
+
 let connectedUsers = [];
 let fileAttente = [];
 let partiesEnCours = [];
@@ -35,8 +36,6 @@ wsServer.on('request', function(request) {
         });
         return player;
     }
-    
-
 
     // Ecrire ici le code qui indique ce que l'on fait en cas de
     // réception de message et en cas de fermeture de la WebSocket
@@ -86,11 +85,13 @@ wsServer.on('request', function(request) {
                 const randomColor = Math.floor(Math.random() * 2) + 1;
                 fileAttente[0].color = randomColor === 1 ? 'white' : 'black';
                 fileAttente[1].color = randomColor === 1 ? 'black' : 'white';
-                let message = { type: 'start' , joueur1: fileAttente[0].username, joueur2: fileAttente[1].username };
+                let message = { type: 'start' , joueur1: fileAttente[0], joueur2: fileAttente[1]};
                 fileAttente.forEach(player => {
                     player.connection.send(JSON.stringify(message));
                 });
-                partie = { joueur1: fileAttente[0], joueur2: fileAttente[1] };
+                let grid = Array(8).fill(null).map(() => Array(8).fill(null));
+                plateau.init(grid);
+                partie = { joueur1: fileAttente[0], joueur2: fileAttente[1], grid: grid };
                 partiesEnCours.push(partie);
                 fileAttente = [];
             }

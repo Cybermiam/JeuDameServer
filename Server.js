@@ -1,6 +1,7 @@
 const http = require("http");
 const traiterMessages = require("traiter-messages");
-const plateau = require("./plateau");
+const { handleLogin } = require("./handleLogin");
+//const plateau = require("./plateau");
 
 const server = http.createServer();
 const users = [
@@ -10,6 +11,7 @@ const users = [
 ];
 
 let connectedUsers = [];
+let connectedUsernames = [];
 let fileAttente = [];
 let partiesEnCours = [];
 
@@ -32,7 +34,6 @@ wsServer.on("request", function (request) {
     if (message.type === "utf8") {
       try {
         const parsed = JSON.parse(message.utf8Data);
-        // Pass the already-parsed object to your handler:
         traiterMessages(
           parsed,
           connection,

@@ -1,3 +1,5 @@
+const { handleLogin } = require("../handleLogin");
+
 function traiterMessages(
   parsedMessage,
   connection,
@@ -13,22 +15,7 @@ function traiterMessages(
 
   switch (parsedMessage.type) {
     case "login":
-      console.log("Login attempt:", parsedMessage);
-      const user = users.find(
-        (user) =>
-          user.username === parsedMessage.username &&
-          user.password === parsedMessage.password
-      );
-      if (user) {
-        message = { type: "login", response: true, username: user.username };
-        connectedUsernames.push(user.username);
-        console.log(connectedUsernames);
-        connection.send(JSON.stringify(message));
-      } else {
-        message = { type: "login", response: false };
-        connection.send(JSON.stringify(message));
-      }
-      console.log("Login success");
+      handleLogin(parsedMessage, connection, connectedUsernames, users);
       break;
 
     case "logout":

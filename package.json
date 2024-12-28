@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "mongoose": "^8.9.2",
     "websocket": "^1.0.35"
   }
 }

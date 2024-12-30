@@ -2,13 +2,20 @@ const { Joueur, Match } = require("./models");
 
 // Function to find a joueur by name (for login, etc.)
 async function findJoueurByName(name) {
-  return await Joueur.findOne({ nomDeJoueur: name });
+  return await Joueur.findOne({ username: name });
 }
 
 // Function to create a new joueur
 async function createJoueur(name, password) {
-  const newJoueur = new Joueur({ nomDeJoueur: name, password });
-  return await newJoueur.save();
+  const newJoueur = new Joueur({ username: name, password });
+  try {
+    const savedJoueur = await newJoueur.save();
+    console.log("New joueur saved:", savedJoueur);
+    return savedJoueur; // Return le joueur sauvegarde
+  } catch (error) {
+    console.error("Error saving joueur:", error);
+    throw error; // Re-throw the error so that the caller can handle it
+  }
 }
 
 // Function to create a new match

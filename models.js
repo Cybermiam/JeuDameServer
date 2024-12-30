@@ -1,7 +1,7 @@
 const mongoose = require("./db");
 
 const joueurSchema = new mongoose.Schema({
-  nomDeJoueur: { type: String, required: true },
+  username: { type: String, required: true },
   password: { type: String, required: true },
   matchesJoues: { type: Number, default: 0 },
   matchesGagnes: { type: Number, default: 0 },

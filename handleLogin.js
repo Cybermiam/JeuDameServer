@@ -17,10 +17,10 @@ async function handleLogin(
   if (joueur) {
     // si joueur existe, valider mod de passe et envoyer login success
     if (joueur.password !== parsedMessage.password) {
-      connection.send(JSON.stringify({ type: "Login", success: false }));
+      connection.send(JSON.stringify({ type: "login", success: false }));
       return;
     } else {
-      const message = { type: "Login", success: true, joueur: joueur };
+      const message = { type: "login", success: true, joueur: joueur };
       connectedUsernames.push(joueur.username);
       connection.send(JSON.stringify(message));
     }
@@ -29,7 +29,7 @@ async function handleLogin(
       console.error("il manque: username ou password", parsedMessage);
       connection.send(
         JSON.stringify({
-          type: "Login",
+          type: "login",
           success: false,
           message: "Manquent des informations necessaires",
         })
@@ -42,7 +42,7 @@ async function handleLogin(
       parsedMessage.password
     );
     connection.send(
-      JSON.stringify({ type: "Login", success: true, joueur: newJoueur })
+      JSON.stringify({ type: "login", success: true, joueur: newJoueur })
     );
   }
 }

@@ -30,6 +30,10 @@ async function createMatch(joueur1, joueur2, couleur1, couleur2, debut) {
   return await newMatch.save();
 }
 
+async function getMatchById(matchId) {
+  return await Match.findById;
+}
+
 // Function to update the match state
 async function updateMatchState(matchId, etat, boardState) {
   return await Match.findByIdAndUpdate(matchId, {

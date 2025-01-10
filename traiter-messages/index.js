@@ -1,4 +1,5 @@
 const { handleLogin } = require("../handleLogin");
+const { handleMove } = require("../handleMove");
 
 function traiterMessages(
   parsedMessage,
@@ -27,7 +28,12 @@ function traiterMessages(
       console.log("Logout success");
       break;
 
-    case "Move":
+    case "startGame":
+      console.log("Demarrer match");
+      break;
+
+    case "move":
+      handleMove(parsedMessage);
       console.log("Move success");
       break;
 

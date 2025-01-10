@@ -1,13 +1,18 @@
 const { handleLogin } = require("../handleLogin");
 const { handleMove } = require("../handleMove");
+const {
+  handleUsers,
+  addUser,
+  removeUser,
+  getUser,
+  getConnectedUsers,
+} = require("../handleUsers");
+const {
+  addUserToQueue,
+  afficherListeAttente,
+} = require("../handleFileAttente");
 
-function traiterMessages(
-  parsedMessage,
-  connection,
-  connectedUsers,
-  connectedUsernames,
-  users
-) {
+function traiterMessages(parsedMessage, connection) {
   console.log("Message received:", parsedMessage);
   if (!parsedMessage.type) {
     console.log("Missing 'type' field in the message.");
@@ -16,7 +21,7 @@ function traiterMessages(
 
   switch (parsedMessage.type) {
     case "login":
-      handleLogin(parsedMessage, connection, connectedUsernames, users);
+      handleLogin(parsedMessage, connection);
       break;
 
     case "logout":
@@ -28,8 +33,10 @@ function traiterMessages(
       console.log("Logout success");
       break;
 
-    case "startGame":
-      console.log("Demarrer match");
+    case "fileAttente":
+      addUserToQueue(getUser(parsedMessage.username));
+
+      afficherListeAttente();
       break;
 
     case "move":
@@ -44,15 +51,9 @@ function traiterMessages(
     case "Ping":
     case "Hello":
       let userToPing;
-      connectedUsernames.forEach((user) => {
-        if (user !== parsedMessage.username) {
-          userToPing = user;
-        }
-      });
+
       message = { type: "pong", username: userToPing };
-      connectedUsers.forEach((user) => {
-        user.send(JSON.stringify(message));
-      });
+
       console.log("Ping from client");
       break;
 

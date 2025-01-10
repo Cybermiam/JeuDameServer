@@ -1,4 +1,5 @@
 const { findJoueurByName, createJoueur } = require("./dbCRUD");
+const { addUser } = require("./handleUsers");
 
 async function handleLogin(
   parsedMessage,
@@ -15,14 +16,15 @@ async function handleLogin(
   const joueur = await findJoueurByName(parsedMessage.username);
 
   if (joueur) {
-    // si joueur existe, valider mod de passe et envoyer login success
     if (joueur.password !== parsedMessage.password) {
       connection.send(JSON.stringify({ type: "login", success: false }));
       return;
     } else {
+      // si joueur existe, valider mod de passe et envoyer login success
       const message = { type: "login", success: true, joueur: joueur };
-      connectedUsernames.push(joueur.username);
       connection.send(JSON.stringify(message));
+      let player = { username: parsedMessage.username, connection: connection };
+      addUser(player);
     }
   } else {
     if (!parsedMessage.username || !parsedMessage.password) {
@@ -41,6 +43,8 @@ async function handleLogin(
       parsedMessage.username,
       parsedMessage.password
     );
+    let joueur = { username: parsedMessage.username, connection: connection };
+    addUser(joueur);
     connection.send(
       JSON.stringify({ type: "login", success: true, joueur: newJoueur })
     );

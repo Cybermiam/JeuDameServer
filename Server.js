@@ -4,16 +4,6 @@ const { handleLogin } = require("./handleLogin");
 //const plateau = require("./plateau");
 
 const server = http.createServer();
-const users = [
-  { username: "admin", password: "admin" },
-  { username: "player1", password: "player1" },
-  { username: "player2", password: "player2" },
-];
-
-let connectedUsers = [];
-let connectedUsernames = [];
-let fileAttente = [];
-let partiesEnCours = [];
 
 server.listen(9898);
 
@@ -27,20 +17,13 @@ const wsServer = new WebSocketServer({
 wsServer.on("request", function (request) {
   console.log("Connection from origin");
   const connection = request.accept(null, request.origin);
-  connectedUsers.push(connection);
   // Ecrire ici le code qui indique ce que l'on fait en cas de
   // réception de message et en cas de fermeture de la WebSocket
   connection.on("message", function (message) {
     if (message.type === "utf8") {
       try {
         const parsed = JSON.parse(message.utf8Data);
-        traiterMessages(
-          parsed,
-          connection,
-          connectedUsers,
-          connectedUsernames,
-          users
-        );
+        traiterMessages(parsed, connection);
       } catch (err) {
         console.error("Erreur de parsing JSON:", err);
       }
@@ -51,8 +34,6 @@ wsServer.on("request", function (request) {
     }
   });
   connection.on("close", function (reasonCode, description) {
-    let index = connectedUsers.indexOf(connection);
-    connectedUsers.splice(index, 1);
     console.log("Client disconnected");
   });
 });

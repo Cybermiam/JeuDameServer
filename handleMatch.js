@@ -13,7 +13,7 @@ function creerMatch(joueur1, joueur2) {
     etat: "en cours",
     table: initializeTable(),
   };
-  newMatch.table = rotateTableClockwise(newMatch.table);
+  // newMatch.table = rotateTableClockwise(newMatch.table);
   prettyPrintTable(newMatch.table);
   matchesEnCours.push(newMatch);
   console.log("New match created:", newMatch);
@@ -58,8 +58,20 @@ function initializeTable() {
 }
 
 function prettyPrintTable(table) {
-  for (let row of table) {
-    console.log(row.map((cell) => (cell === null ? "." : cell)).join(" "));
+  const rows = table.length;
+  const cols = table[0].length;
+  const colLabels =
+    "  " +
+    Array.from({ length: cols }, (_, i) => String.fromCharCode(65 + i)).join(
+      " "
+    ); // A to H
+
+  console.log(colLabels); // Print column labels
+
+  for (let i = 0; i < rows; i++) {
+    const rowLabel = i; // Top row starts at 0
+    const row = table[i].map((cell) => (cell === null ? "." : cell)).join(" ");
+    console.log(`${rowLabel} ${row}`); // Print row label followed by the row content
   }
 }
 

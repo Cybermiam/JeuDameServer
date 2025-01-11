@@ -18,7 +18,7 @@ async function handleMove(parsedMessage) {
   const piece = table[y_depart][x_depart]; // Use [y][x] indexing (server-side)
   if (piece !== couleur[0].toUpperCase()) {
     console.log("Invalid move: piece does not match the player's color");
-    // return;
+    return;
   }
 
   const dx = x_arrivee - x_depart;
@@ -51,7 +51,7 @@ async function handleMove(parsedMessage) {
   // Check if the target cell is empty
   if (table[y_arrivee][x_arrivee] !== null) {
     console.log("Invalid move: target cell is not empty");
-    //return;
+    return;
   }
 
   // Update the table with the move
@@ -64,10 +64,10 @@ async function handleMove(parsedMessage) {
   // Send the move to both players, adjusting for rotation if necessary
   const rotatedMessage = {
     type: "moveReturn",
-    x_depart: parseInt(y_depart), // Send rotated coordinates for client
-    y_depart: parseInt(x_depart),
-    x_arrivee: parseInt(y_arrivee),
-    y_arrivee: parseInt(x_arrivee),
+    x_depart: parseInt(x_depart), // Send rotated coordinates for client
+    y_depart: parseInt(y_depart),
+    x_arrivee: parseInt(x_arrivee),
+    y_arrivee: parseInt(y_arrivee),
   };
 
   sendMessageToPlayers(match, JSON.stringify(rotatedMessage));

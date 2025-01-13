@@ -77,6 +77,45 @@ function prettyPrintTable(table) {
   }
 }
 
+function winCheck(joueur) {
+  match = getMatch(joueur);
+  table = match.table;
+  whitePlayer = match.joueur1.color === "W" ? match.joueur1 : match.joueur2;
+  blackPlayer = match.joueur1.color === "B" ? match.joueur1 : match.joueur2;
+  let whiteCount = 0;
+  let blackCount = 0;
+  for (let i = 0; i < table.length; i++) {
+    for (let j = 0; j < table[i].length; j++) {
+      if (table[i][j] === "W") {
+        whiteCount++;
+      } else if (table[i][j] === "B") {
+        blackCount++;
+      }
+    }
+  }
+  if (whiteCount === 0) {
+    message = JSON.stringify({
+      type: "finMatch",
+      winner: blackPlayer.username,
+    });
+    updateJoueur(blackPlayer, "victoire");
+    updateJoueur(whitePlayer, "defaite");
+    sendMessageToPlayers(match, message);
+    matchesEnCours = matchesEnCours.filter((m) => m !== match);
+  } else if (blackCount === 0) {
+    message = JSON.stringify({
+      type: "finMatch",
+      winner: whitePlayer.username,
+    });
+    updateJoueur(whitePlayer, "victoire");
+    updateJoueur(blackPlayer, "defaite");
+    sendMessageToPlayers(match, message);
+    matchesEnCours = matchesEnCours.filter((m) => m !== match);
+  }
+
+  return null;
+}
+
 function rotateTableClockwise(table) {
   const N = table.length;
   const newTable = Array.from({ length: N }, () => Array(N).fill(null));
@@ -117,4 +156,5 @@ module.exports = {
   prettyPrintTable,
   rotateTableClockwise,
   abandonMatch,
+  winCheck,
 };

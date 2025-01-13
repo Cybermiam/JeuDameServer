@@ -1,7 +1,9 @@
 const http = require("http");
 const traiterMessages = require("traiter-messages");
 const { handleLogin } = require("./handleLogin");
-//const plateau = require("./plateau");
+const { getUserFromConnection, removeUser } = require("./handleUsers");
+const { abandonMatch } = require("./handleMatch");
+const { removeUserFromQueue } = require("./handleFileAttente");
 
 const server = http.createServer();
 
@@ -34,6 +36,19 @@ wsServer.on("request", function (request) {
     }
   });
   connection.on("close", function (reasonCode, description) {
-    console.log("Client disconnected");
+    joueur = getUserFromConnection(connection);
+
+    console.log(joueur);
+    try {
+      abandonMatch(joueur);
+    } catch (error) {
+      console.error("Error abandoning match:", error.message);
+    }
+    try {
+      removeUserFromQueue(joueur);
+    } catch (error) {
+      console.error("Error removing user from queue:", error.message);
+    }
+    removeUser(joueur);
   });
 });

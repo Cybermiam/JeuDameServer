@@ -80,10 +80,25 @@ async function updateJoueur(joueur, resultatMatch) {
   return await Joueur.findByIdAndUpdate(joueurId, update, { new: true });
 }
 
+async function getPlayerStats() {
+  let joueurs = await Joueur.find({});
+  let res = [];
+  for (let joueur of joueurs) {
+    res.push({
+      username: joueur.username,
+      matchesJoues: joueur.matchesJoues,
+      matchesGagnes: joueur.matchesGagnes,
+      matchesPerdus: joueur.matchesPerdus,
+      matchesNuls: joueur.matchesNuls,
+    });
+  }
+  return res;
+}
 module.exports = {
   findJoueurByName,
   createJoueur,
   createMatch,
   updateMatchState,
   updateJoueur,
+  getPlayerStats,
 };

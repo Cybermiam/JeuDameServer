@@ -19,10 +19,15 @@ function getConnectedUsers() {
   return connectedUsers;
 }
 
+function getUserFromConnection(connection) {
+  return connectedUsers.find((u) => u.connection === connection);
+}
+
 module.exports = {
   handleUsers,
   addUser,
   removeUser,
   getUser,
   getConnectedUsers,
+  getUserFromConnection,
 };

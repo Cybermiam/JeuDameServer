@@ -12,6 +12,7 @@ const {
   afficherListeAttente,
 } = require("../handleFileAttente");
 const { abandonMatch } = require("../handleMatch");
+const { handleLogout } = require("../handleLogout");
 
 let nbTour = 0;
 
@@ -28,12 +29,7 @@ function traiterMessages(parsedMessage, connection) {
       break;
 
     case "logout":
-      message = { type: "logout" };
-      connection.send(JSON.stringify(message));
-      index = connectedUsernames.indexOf(parsedMessage.username);
-      connectedUsernames.splice(index, 1);
-      console.log(connectedUsernames);
-      console.log("Logout success");
+      handleLogout(parsedMessage.username);
       break;
 
     case "fileAttente":

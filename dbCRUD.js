@@ -7,14 +7,20 @@ async function findJoueurByName(name) {
 
 // Function to create a new joueur
 async function createJoueur(name, password) {
-  const newJoueur = new Joueur({ username: name, password });
   try {
+    const existingUser = await Joueur.findOne({ username: name });
+    if (existingUser) {
+      // Username already taken
+      throw new Error(`Username "${name}" already exists`);
+    }
+
+    const newJoueur = new Joueur({ username: name, password });
     const savedJoueur = await newJoueur.save();
     console.log("New joueur saved:", savedJoueur);
-    return savedJoueur; // Return le joueur sauvegarde
+    return savedJoueur; // Return the saved Joueur
   } catch (error) {
     console.error("Error saving joueur:", error);
-    throw error; // Re-throw the error so that the caller can handle it
+    throw error; // Re-throw so the caller can handle or display the error
   }
 }
 
@@ -43,28 +49,35 @@ async function updateMatchState(matchId, etat, boardState) {
 }
 
 async function getJoueurId(username) {
-  return await Joueur.findOne({
-    username,
-  })._id;
-}
-async function updateJoueur(joueur, resultatMatch) {
-  const joueurId = getJoueurId(joueur.username);
-  if (resultatMatch === "victoire") {
-    return await Joueur.findByIdAndUpdate(joueurId, {
-      $inc: { matchesGagnes: 1 },
-      $inc: { matchesJoues: 1 },
-    });
-  } else if (resultatMatch === "defaite") {
-    return await Joueur.findByIdAndUpdate(joueurId, {
-      $inc: { matchesPerdus: 1 },
-      $inc: { matchesJoues: 1 },
-    });
-  } else {
-    return await Joueur.findByIdAndUpdate(joueurId, {
-      $inc: { matchesNuls: 1 },
-      $inc: { matchesJoues: 1 },
-    });
+  // First, we find the document
+  const doc = await Joueur.findOne({ username });
+  // Check if doc exists
+  if (!doc) {
+    return null; // or throw an error, depending on your logic
   }
+  return doc._id;
+}
+
+async function updateJoueur(joueur, resultatMatch) {
+  // We need to await the ID
+  const joueurId = await getJoueurId(joueur.username);
+  if (!joueurId) {
+    console.log("Joueur not found in the database");
+    return null; // or handle error
+  }
+
+  let update = {};
+  if (resultatMatch === "victoire") {
+    update = { $inc: { matchesGagnes: 1, matchesJoues: 1 } };
+  } else if (resultatMatch === "defaite") {
+    update = { $inc: { matchesPerdus: 1, matchesJoues: 1 } };
+  } else {
+    // match nul (draw)
+    update = { $inc: { matchesNuls: 1, matchesJoues: 1 } };
+  }
+
+  // Use {new: true} if you want the updated document returned.
+  return await Joueur.findByIdAndUpdate(joueurId, update, { new: true });
 }
 
 module.exports = {

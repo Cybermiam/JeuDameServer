@@ -1,3 +1,5 @@
+const { updateJoueur } = require("./dbCRUD");
+
 matchesEnCours = [];
 
 function creerMatch(joueur1, joueur2) {
@@ -94,6 +96,19 @@ function getMatch(joueur) {
   );
 }
 
+function abandonMatch(joueur) {
+  match = getMatch(joueur);
+  adversaire = match.joueur1 === joueur ? match.joueur2 : match.joueur1;
+  message = JSON.stringify({
+    type: "finMatch",
+    winner: adversaire.username,
+  });
+  matchesEnCours = matchesEnCours.filter((m) => m !== match);
+  updateJoueur(adversaire, "victoire");
+  updateJoueur(joueur, "defaite");
+  sendMessageToPlayers(match, message);
+}
+
 module.exports = {
   creerMatch,
   sendMessageToPlayers,
@@ -101,4 +116,5 @@ module.exports = {
   getMatch,
   prettyPrintTable,
   rotateTableClockwise,
+  abandonMatch,
 };

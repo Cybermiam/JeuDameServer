@@ -42,9 +42,35 @@ async function updateMatchState(matchId, etat, boardState) {
   });
 }
 
+async function getJoueurId(username) {
+  return await Joueur.findOne({
+    username,
+  })._id;
+}
+async function updateJoueur(joueur, resultatMatch) {
+  const joueurId = getJoueurId(joueur.username);
+  if (resultatMatch === "victoire") {
+    return await Joueur.findByIdAndUpdate(joueurId, {
+      $inc: { matchesGagnes: 1 },
+      $inc: { matchesJoues: 1 },
+    });
+  } else if (resultatMatch === "defaite") {
+    return await Joueur.findByIdAndUpdate(joueurId, {
+      $inc: { matchesPerdus: 1 },
+      $inc: { matchesJoues: 1 },
+    });
+  } else {
+    return await Joueur.findByIdAndUpdate(joueurId, {
+      $inc: { matchesNuls: 1 },
+      $inc: { matchesJoues: 1 },
+    });
+  }
+}
+
 module.exports = {
   findJoueurByName,
   createJoueur,
   createMatch,
   updateMatchState,
+  updateJoueur,
 };

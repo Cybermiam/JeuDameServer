@@ -31,8 +31,8 @@ async function handleMove(parsedMessage) {
   }
 
   if (Math.abs(dx) === 2) {
-    const x_middle = (x_depart + x_arrivee) / 2;
-    const y_middle = (y_depart + y_arrivee) / 2;
+    const x_middle = (parseInt(x_depart) + parseInt(x_arrivee)) / 2;
+    const y_middle = (parseInt(y_depart) + parseInt(y_arrivee)) / 2;
     const middle_piece = table[y_middle][x_middle]; // Intermediate cell
 
     // Check if there's an opponent piece to capture

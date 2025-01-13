@@ -11,6 +11,9 @@ const {
   addUserToQueue,
   afficherListeAttente,
 } = require("../handleFileAttente");
+const { abandonMatch } = require("../handleMatch");
+
+let nbTour = 0;
 
 function traiterMessages(parsedMessage, connection) {
   console.log("Message received:", parsedMessage);
@@ -42,6 +45,7 @@ function traiterMessages(parsedMessage, connection) {
     case "move":
       handleMove(parsedMessage);
       console.log("Move success");
+      nbTour++;
       break;
 
     case "Joueur":
@@ -56,6 +60,8 @@ function traiterMessages(parsedMessage, connection) {
 
       console.log("Ping from client");
       break;
+    case "abandon":
+      abandonMatch(getUser(parsedMessage.username));
 
     default:
       console.log("Type de message inconnu");
